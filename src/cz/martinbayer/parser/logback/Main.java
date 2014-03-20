@@ -5,14 +5,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cz.martinbayer.parser.logback.pattern.PatternParser;
 import cz.martinbayer.parser.logback.pattern.TypedPatternFactory;
 import cz.martinbayer.parser.logback.pattern.logic.LogicClass;
 
@@ -23,8 +22,24 @@ public class Main {
 	public static final String LEVEL_REGEX = "OFF|WARN|ERROR|INFO|DEBUG|TRACE|ALL";
 
 	public static void main(String[] args) throws InterruptedException {
-		SimpleDateFormat f = new SimpleDateFormat("G");
-		System.out.println(f.format(new Date()));
+		// String[] regexs = { "x?+", "x*+", "x++", "x{2}+", "x{2,}+", "x{2,5}+"
+		// };
+		// String input = "xxxxxxx";
+		//
+		// for (String r : regexs) {
+		// Pattern pattern = Pattern.compile(r);
+		// Matcher matcher = pattern.matcher(input);
+		//
+		// //
+		// // Find every match and print it
+		// //
+		// System.out.println("------------------------------");
+		// System.out.format("Regex:  %s %n", r);
+		// while (matcher.find()) {
+		// System.out.format("Text '%s' found at %d to %d.%n",
+		// matcher.group(), matcher.start(), matcher.end());
+		// }
+		// }
 		// new Main().createRandomLogFile();
 		testDecode();
 	}
@@ -48,7 +63,25 @@ public class Main {
 			e.printStackTrace();
 		}
 		String pattern = "%-20(%d{MM/dd/yy HH:mm:ss.SSS} %-5level) %msg %xEx{full} [%thread] [%file:%line]%n";
-		TypedPatternFactory.getRegexPattern(input, pattern);
+		String s = TypedPatternFactory.getRegexPattern(input, pattern);
+		// test(pattern, input);
+		System.out.println(s);
+	}
+
+	private static void test(String configPattern, String input) {
+		String[] partialPatterns = PatternParser
+				.getConfigPatternParts(configPattern);
+		String one = partialPatterns[1];
+		String two = partialPatterns[2];
+		String oneQuoted = Pattern.quote(one);
+		String twoQuoted = Pattern.quote(two);
+		oneQuoted = "(?<=" + oneQuoted + ")";
+		twoQuoted = "(?=" + twoQuoted + ")";
+		Pattern p = Pattern.compile(oneQuoted + "(.*)" + twoQuoted);
+		Matcher m = p.matcher(configPattern);
+		while (m.find()) {
+			System.out.println("begin" + m.group() + "end");
+		}
 	}
 
 	void findTime(String input, String timePattern) {

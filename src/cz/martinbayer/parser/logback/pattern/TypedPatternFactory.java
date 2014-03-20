@@ -1,6 +1,8 @@
 package cz.martinbayer.parser.logback.pattern;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TypedPatternFactory {
 
@@ -30,17 +32,36 @@ public class TypedPatternFactory {
 		return typedPatterns.get(convWord);
 	}
 
-	public static void getRegexPattern(String s, String configPattern) {
+	public static String getRegexPattern(String s, String configPattern) {
 		String[] partialPatterns = PatternParser
 				.getConfigPatternParts(configPattern);
+		String[] between = new String[partialPatterns.length - 1];
+		String leftSide, rightSide;
+		Pattern p;
+		Matcher m;
+		for (int i = 0; i < between.length; i++) {
+			leftSide = "(?<=" + Pattern.quote(partialPatterns[i]) + ")";
+			rightSide = "(?=" + Pattern.quote(partialPatterns[i + 1]) + ")";
+			p = Pattern.compile(leftSide + "(.*)" + rightSide);
+			m = p.matcher(configPattern);
+			if (m.find()) {
+				between[i] = Pattern.quote(m.group().replace(")", "")
+						.replace("(", "").replace(" ", "\\s"));
+			} else {
+				between[i] = null;
+			}
+		}
 		StringBuffer regexPattern = new StringBuffer();
 		ConversionWord convWord;
+		int i = 0;
 		for (String partPattern : partialPatterns) {
 			convWord = new ConversionWord(partPattern);
 			TypedPattern pattern = typedPatterns.get(convWord.getConvWord());
 			if (pattern != null) {
-				System.out.println(pattern.getRegex(convWord));
+				regexPattern.append(pattern.getRegex(convWord)).append(
+						i < between.length ? between[i++] : "");
 			}
 		}
+		return regexPattern.toString();
 	}
 }
