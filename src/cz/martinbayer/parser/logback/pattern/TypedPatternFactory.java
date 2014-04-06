@@ -32,7 +32,7 @@ public class TypedPatternFactory {
 		return typedPatterns.get(convWord);
 	}
 
-	public static String getRegexPattern(String s, String configPattern) {
+	public static String getRegexPattern(String configPattern) {
 		String[] partialPatterns = PatternParser
 				.getConfigPatternParts(configPattern);
 		String[] between = new String[partialPatterns.length - 1];
@@ -45,8 +45,9 @@ public class TypedPatternFactory {
 			p = Pattern.compile(leftSide + "(.*)" + rightSide);
 			m = p.matcher(configPattern);
 			if (m.find()) {
-				between[i] = Pattern.quote(m.group().replace(")", "")
-						.replace("(", "").replace(" ", "\\s"));
+				between[i] = m.group().replace(")", "").replace("(", "")
+						.replace(" ", "\\s").replace("[", "\\[")
+						.replace("]", "\\]");
 			} else {
 				between[i] = null;
 			}

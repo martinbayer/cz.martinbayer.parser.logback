@@ -6,7 +6,7 @@ import cz.martinbayer.parser.logback.pattern.TypedPattern;
 public class NewLinePattern extends TypedPattern {
 
 	private static final String GROUP_NAME = "newline";
-	private static final String NEW_LINE_REGEX = "\\n";
+	private static final String NEW_LINE_REGEX = "\\n|\\r|\\r\\n";
 
 	@Override
 	public String getGroupName() {

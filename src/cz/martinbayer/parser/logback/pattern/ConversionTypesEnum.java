@@ -2,7 +2,6 @@ package cz.martinbayer.parser.logback.pattern;
 
 import cz.martinbayer.parser.logback.pattern.logic.DateTimePattern;
 import cz.martinbayer.parser.logback.pattern.logic.ExceptionPattern;
-import cz.martinbayer.parser.logback.pattern.logic.ExtendedExceptionPattern;
 import cz.martinbayer.parser.logback.pattern.logic.FilePattern;
 import cz.martinbayer.parser.logback.pattern.logic.LevelPattern;
 import cz.martinbayer.parser.logback.pattern.logic.LinePattern;
@@ -17,7 +16,7 @@ public enum ConversionTypesEnum {
 	LEVEL_TYPE(ConversionWordsEnum.LEVEL_OF_EVENT, new LevelPattern()),
 	EXCEPTION_TYPE(ConversionWordsEnum.EXCEPTION, new ExceptionPattern()),
 	EXTENDED_EXCEPTION_TYPE(ConversionWordsEnum.EXTENDED_EXCEPTION,
-			new ExtendedExceptionPattern()),
+			new ExceptionPattern()),
 	FILE_TYPE(ConversionWordsEnum.FILE_OF_REQUEST, new FilePattern()),
 	LINE_TYPE(ConversionWordsEnum.LINE_OF_REQUEST, new LinePattern()),
 	NEW_LINE_TYPE(ConversionWordsEnum.NEW_LINE, new NewLinePattern()),

@@ -16,15 +16,12 @@ public abstract class TypedPattern {
 
 	private boolean propertyPresent = false;
 
-	private String convWord;
-
 	/** Pattern group is created which is named by {@link #getGroupName()} result
 	 * 
 	 * @param convWord
 	 * @return */
 	public synchronized String getRegex(ConversionWord word) {
 		defaultValues();
-		this.convWord = word.getConvWord();
 		initStringProperties(word.getProperties());
 		if (propertyPresent) {
 			initRegexProperty();
@@ -32,7 +29,7 @@ public abstract class TypedPattern {
 		StringBuffer sb = new StringBuffer();
 		sb.append("(?<").append(getGroupName()).append(">");
 		sb.append(initRegex());
-		sb.append(")");
+		sb.append(")").append(getQuantity().getQuantity());
 		return sb.toString();
 	}
 
@@ -40,7 +37,10 @@ public abstract class TypedPattern {
 		stringSettings = null;
 		regexSettings = null;
 		propertyPresent = false;
-		convWord = null;
+	}
+
+	protected RegexQuantity getQuantity() {
+		return RegexQuantity.DEFAULT;
 	}
 
 	protected abstract String initRegex();
